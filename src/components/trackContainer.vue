@@ -6,31 +6,56 @@
     <!-- image contianer -->
     <div class="inline w-1/6 rounded self-center p-2">
       <img
-        src="https://openclipart.org/image/800px/245106"
+        class="max-h-img"
+        :src="this.waveData.IMG"
         alt="vehicle image"
         srcset=""
       />
     </div>
     <!-- track container-->
     <div class="inline pl-2 w-full">
-      <div class="w-max font-semibold py-2 pl-1">Name of track</div>
+      <div class="w-max font-semibold py-2 pl-1">{{ this.waveData.Name }}</div>
       <div class="flex rounded divide-x">
-        <div class="inline-block my-auto px-5">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="50"
-            height="50"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-3 17v-10l9 5.146-9 4.854z"
-            />
-          </svg>
+        <div class="inline-block m-auto px-5">
+          <transition name="mode-fade" mode="out-in">
+            <!-- play button -->
+            <div v-if="!this.playing" key="play" @click="play">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-14 w-14"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+            <!-- pause button -->
+            <div key="pause" v-else @click="play">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-14 w-14"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+          </transition>
         </div>
         <div :id="`${this.waveIdString}`" class="inline-block w-11/12"></div>
       </div>
       <!-- Tags contianer -->
-      <TrackTags />
+      <TrackTags :tags="this.waveData.tags" />
     </div>
   </div>
 </template>
@@ -43,18 +68,21 @@ export default {
   data() {
     return {
       //options: {},
-      waveIdString: `wave${this.waveId}`,
+      playing: false,
+      waveIdString: `wave${this.waveData._id}`,
     };
   },
   props: {
-    waveId: Number,
+    waveData: Object,
   },
-  /* beforeMount() {
-    console.log(this.waveIdString);
-  }, */
+  methods: {
+    play() {
+      this.wavesurfer.playPause();
+      this.playing = !this.playing;
+    },
+  },
   mounted() {
     try {
-      console.log(this.waveIdString);
       this.wavesurfer = WaveSurfer.create({
         container: `#${this.waveIdString}`,
         waveColor: '#d9dcff',
@@ -65,11 +93,9 @@ export default {
         cursorWidth: 1,
         barGap: 3,
         fillParent: true,
-        mediaControls: true,
+        hideScrollbar: true,
       });
-      this.wavesurfer.load(
-        'https://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3'
-      );
+      this.wavesurfer.load(this.waveData.URL);
       this.wavesurfer.on('ready', function () {
         this.wavesurfer.play();
       });
