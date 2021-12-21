@@ -96,7 +96,7 @@
               Add sound</a
             >
             <teleport to="#app">
-              <Modal v-show="isModalVisible" @close="closeModal" />
+              <addSoundModal v-show="isModalVisible" @close="closeModal" />
             </teleport>
           </li>
         </ul>
@@ -106,12 +106,12 @@
 </template>
 
 <script>
-import Modal from './modal.vue';
+import addSoundModal from './addSoundModal.vue';
 
 export default {
   name: 'App',
   components: {
-    Modal,
+    addSoundModal,
   },
   data() {
     return {
