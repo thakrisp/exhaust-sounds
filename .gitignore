@@ -3,6 +3,8 @@ node_modules
 /dist
 
 src/assets/testData.json
+/uploads
+.eslintrc.js
 
 # local env files
 .env.local

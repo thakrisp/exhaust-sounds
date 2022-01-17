@@ -6,8 +6,8 @@
     <input
       type="search"
       placeholder="Find the right sound..."
-      class="block rounded-md border-0 focus:outline-none focus:ring-0 focus:border-blue-500 flex-grow p-2"
-    />
+      class="block rounded-md border-0 focus:outline-none focus:ring-0 focus:border-blue-500 flex-grow p-2 text-sm"
+    >
     <button type="submit">
       <svg
         xmlns="http://www.w3.org/2000/svg"

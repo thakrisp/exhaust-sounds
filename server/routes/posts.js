@@ -1,6 +1,10 @@
 const express = require('express');
 //const { ObjectId } = require('mongodb');
 const MongoClient = require('mongodb').MongoClient;
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const { uploadFile } = require('../aws');
 
 const router = express.Router();
 
@@ -9,25 +13,74 @@ require('dotenv').config();
 let dbUser = process.env.dbUserName;
 let dbPassword = process.env.dbPassword;
 
+const fileFilter = (_, file, cb) => {
+  const allowedTypes = ['audio/mpeg', 'image/jpeg', 'image/png'];
+  if (!allowedTypes.includes(file.mimetype)) {
+    const error = new Error('Incorrect file');
+    error.code = 'INCORRECT_FILETYPE';
+    return cb(error, false);
+  }
+  cb(null, true);
+};
+
+const upload = multer({
+  dest: './uploads',
+  fileFilter,
+  limits: {
+    fileSize: 5000000,
+  },
+});
+
 //get everything in database
 router.get('/', async (_, res) => {
   const posts = await loadPostsCollection();
-  res.send(await posts.find({}).toArray());
-  console.log('Have been called from frontEnd');
+  let data = await posts.find({}).toArray();
+
+  res.send(data);
 });
 
 //Post to database
-router.post('/', async (req, res) => {
-  const posts = await loadPostsCollection();
-  await posts.insertOne({
-    URL: req.body.URL,
-    IMG: req.body.IMG,
-    Name: req.body.Name,
-    tags: req.body.tags,
-    date: new Date(),
-  });
-  res.status(201).send('Added to DB');
-});
+router.post(
+  '/',
+  upload.fields([
+    { name: 'audioFile', maxCount: 1 },
+    { name: 'imgFile', maxCount: 1 },
+  ]),
+  async (req, res) => {
+    let imgFile = req.files['imgFile'][0]['filename'];
+    let imgFileEXT = path.extname(req.files['imgFile'][0]['originalname']);
+    let imgFilePath = path.join(__dirname, `../../uploads/${imgFile}`);
+
+    let audioFile = req.files['audioFile'][0]['filename'];
+    let audioFileEXT = path.extname(req.files['audioFile'][0]['originalname']);
+    let audioFilePath = path.join(__dirname, `../../uploads/${audioFile}`);
+
+    uploadFile(imgFilePath, imgFile, 'test-exhaust-imgs', imgFileEXT);
+    uploadFile(audioFilePath, audioFile, 'test-exhaust-sounds', audioFileEXT);
+
+    fs.unlink(imgFilePath, (err) => {
+      if (err) throw err;
+      console.log(`img file: ${imgFile} was deleted`);
+    });
+
+    fs.unlink(audioFilePath, (err) => {
+      if (err) throw err;
+      console.log(`audio file: ${audioFile} was deleted`);
+    });
+
+    const posts = await loadPostsCollection();
+    await posts.insertOne({
+      Name: req.body.name,
+      IMG: imgFile,
+      Audio: audioFile,
+      tags: JSON.parse(req.body.tags),
+      audioURL: `https://test-exhaust-sounds.s3.us-east-2.amazonaws.com/${audioFile}${audioFileEXT}`,
+      imageURL: `https://test-exhaust-imgs.s3.us-east-2.amazonaws.com/${imgFile}${imgFileEXT}`,
+      date: new Date(),
+    });
+    res.status(201).send('Added to DB');
+  }
+);
 
 async function loadPostsCollection() {
   const client = await MongoClient.connect(

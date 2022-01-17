@@ -10,14 +10,15 @@
     "start": "node ./server/index.js"
   },
   "dependencies": {
+    "aws-sdk": "^2.1052.0",
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "mongodb": "^4.2.1",
+    "multer": "^1.4.4",
     "vue": "^3.0.0",
-    "wavesurfer.js": "^5.2.0",
-    "wavesurfer.js-vue": "^1.0.0"
+    "wavesurfer.js": "^5.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -39,8 +40,8 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
+      "eslint:recommended",
+      "plugin:vue/vue3-recommended"
     ],
     "parserOptions": {
       "parser": "@babel/eslint-parser"

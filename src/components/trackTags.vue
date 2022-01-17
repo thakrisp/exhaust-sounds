@@ -1,10 +1,10 @@
 <template>
-  <div class="h-14 p-4 self-center rounded space-x-1">
-    <span class="font-semibold text-gray-500 text-opacity-70 pr-2">Tags:</span>
+  <div class="p-2 flex flex-wrap space-x-2">
+    <span class="font-semibold text-blue-500 text-opacity-70 pr-2 self-center">Tags:</span>
     <span
       v-for="tag in tags"
       :key="tag"
-      class="text-xs px-3 font-medium bg-red-500 text-white rounded-full py-1.5 hover:bg-red-600"
+      class="px-4 py-2 rounded-full text-red-500 bg-red-200 font-semibold text-sm flex align-center w-max cursor-pointer active:bg-gray-300 transition duration-300 ease"
     >
       {{ tag }}
     </span>
@@ -14,7 +14,10 @@
 <script>
 export default {
   props: {
-    tags: Array,
+    tags: {
+      type: Array,
+      default: () => [],
+    },
   },
 };
 </script>
