@@ -91,7 +91,7 @@
               class="block w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
               @keyup.enter="updateTags"
             >
-            <track-tags :tags="tags" />
+            <TrackTags :tags="tags" />
           </form>
         </section>
 
@@ -122,19 +122,18 @@
 <script>
 import axios from 'axios';
 import modalErrorAlert from './modalErrorAlert.vue';
-import trackTags from './trackTags.vue';
+import TrackTags from './trackTags.vue';
 
 export default {
   name: 'AddSoundModal',
   components: {
     modalErrorAlert,
-    trackTags,
+    TrackTags,
   },
   emits: ['close'],
   data() {
     return {
       tag: '',
-      customDelimiter: [','],
       errors: [],
       name: '',
       imgFile: null,
@@ -161,7 +160,10 @@ export default {
   },
   methods: {
     updateTags() {
-      this.tags.push(this.tag);
+      if (this.tags.length === 0 || this.tags.indexOf(this.tag) === -1) {
+        this.tags.push(this.tag);
+      }
+      console.log(`idx:${this.tags.indexOf(this.tag)}, array:${this.tags}`);
       this.tag = '';
     },
     rmeoveError(oldVal, fileType) {

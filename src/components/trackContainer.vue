@@ -84,7 +84,6 @@ export default {
   },
   data() {
     return {
-      //options: {},
       playing: false,
       waveIdString: `wave${this.waveData._id}`,
     };
