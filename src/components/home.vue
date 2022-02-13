@@ -66,7 +66,7 @@ export default {
     getList() {
       return new Promise((resolve, reject) => {
         axios
-          .get("http://localhost:5000/api/posts")
+          .get("/api/posts")
           .then((res) => resolve(res.data))
           .catch(() => {
             reject;

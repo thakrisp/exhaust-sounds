@@ -14,15 +14,13 @@ app.use('/api/posts', posts);
   res.redirect(301, '/api/posts');
 }); */
 
-console.log('Started!');
+if (process.env.NODE_ENV === 'production') {
+  // Static folder
+  app.use(express.static(__dirname + '/public/'));
 
-//if (process.env.NODE_ENV === 'production') {
-// Static folder
-//app.use(express.static(__dirname + '/public/'));
-
-// Handle SPA
-//app.get(/.*/, (_, res) => res.sendFile(__dirname + '/public/index.html'));
-//}
+  //Handle SPA
+  app.get(/.*/, (_, res) => res.sendFile(__dirname + '/public/index.html'));
+}
 
 app.use((err, _, res) => {
   if (err.code === 'INCORRECT_FILETYPE') {
