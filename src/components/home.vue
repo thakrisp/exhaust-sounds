@@ -54,26 +54,13 @@ export default {
       options: {},
     };
   },
-  mounted() {},
   async created() {
     try {
-      this.MongoData = await this.getList();
+      const response = await axios.get("/api/posts");
+      this.MongoData = response.data
     } catch (err) {
       this.error = err.message;
-    }
-  },
-  methods: {
-    getList() {
-      return new Promise((resolve, reject) => {
-        axios
-          .get("/api/posts")
-          .then((res) => resolve(res.data))
-          .catch(() => {
-            reject;
-          });
-      });
-    },
-  },
+    }},
 };
 </script>
 

@@ -220,7 +220,7 @@ export default {
       formData.append('tags', JSON.stringify(this.tags));
 
       await axios
-        .post('http://localhost:5000/api/posts', formData)
+        .post('/api/posts', formData)
         .then((res) => {
           console.log(res);
         })
