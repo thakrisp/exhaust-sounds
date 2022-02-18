@@ -1,5 +1,5 @@
 const express = require('express');
-//const { ObjectId } = require('mongodb');
+const { ObjectId } = require('mongodb');
 const MongoClient = require('mongodb').MongoClient;
 const multer = require('multer');
 const path = require('path');
@@ -27,14 +27,17 @@ const upload = multer({
   dest: './uploads',
   fileFilter,
   limits: {
-    fileSize: 5000000,
+    fileSize: 6000000,
   },
 });
 
 //get everything in database
 router.get('/', async (_, res) => {
   const posts = await loadPostsCollection();
-  let data = await posts.find({}).toArray();
+  let data = await posts
+    .find({ reports: { $lte: 5 } })
+    .sort({ date: -1 })
+    .toArray();
 
   res.send(data);
 });
@@ -77,10 +80,22 @@ router.post(
       audioURL: `https://test-exhaust-sounds.s3.us-east-2.amazonaws.com/${audioFile}${audioFileEXT}`,
       imageURL: `https://test-exhaust-imgs.s3.us-east-2.amazonaws.com/${imgFile}${imgFileEXT}`,
       date: new Date(),
+      reports: 0,
     });
     res.status(201).send('Added to DB');
   }
 );
+
+router.post('/report', async (req, res) => {
+  const posts = await loadPostsCollection();
+  try {
+    posts.updateOne({ _id: ObjectId(req.body.id) }, { $inc: { reports: 1 } });
+  } catch (err) {
+    console.error(err);
+  }
+
+  res.status(200).send('updated');
+});
 
 async function loadPostsCollection() {
   const client = await MongoClient.connect(

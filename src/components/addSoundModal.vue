@@ -152,10 +152,10 @@ export default {
   },
   watch: {
     imgFile: function (oldVal) {
-      this.rmeoveError(oldVal, 'images');
+      this.removeError(oldVal, 'images');
     },
     file: function (oldVal) {
-      this.rmeoveError(oldVal, 'audio');
+      this.removeError(oldVal, 'audio');
     },
   },
   methods: {
@@ -166,7 +166,7 @@ export default {
       console.log(`idx:${this.tags.indexOf(this.tag)}, array:${this.tags}`);
       this.tag = '';
     },
-    rmeoveError(oldVal, fileType) {
+    removeError(oldVal, fileType) {
       if (oldVal != null) {
         let indexOfError =
           fileType === 'audio'
@@ -193,7 +193,7 @@ export default {
       let size = event.target.files.length > 0 ? event.target.files[0].size : 0;
 
       if (source === 'img') {
-        if (size < 100000) {
+        if (size < 1000000) {
           this.imgFile = event.target.files[0];
         } else {
           this.errors.push('image');
@@ -201,7 +201,7 @@ export default {
           event.target.value = null;
         }
       } else if (source === 'audio') {
-        if (size < 1000000) {
+        if (size < 6000000) {
           this.file = event.target.files[0];
         } else {
           this.errors.push('audio');

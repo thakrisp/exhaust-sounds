@@ -5,9 +5,15 @@ module.exports = {
   outputDir: path.resolve(__dirname, './server/public'),
   devServer: {
     proxy: {
-      '/api/posts': {
+      '/api/posts/*': {
         target: 'http://localhost:5000',
       },
     },
+  },
+  chainWebpack: (config) => {
+    config.plugin('html').tap((args) => {
+      args[0].title = 'Car Exhaust sounds';
+      return args;
+    });
   },
 };

@@ -15,6 +15,9 @@ export default {
     homePage,
     NavBar,
   },
+  mounted:() => {
+    //document.title = 'Car Exhaust Sounds'
+  }
 };
 </script>
 

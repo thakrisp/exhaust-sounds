@@ -10,7 +10,7 @@
         :wave-data="i"
       />
       <div
-        v-if="!MongoData"
+        v-if="!MongoData && !loading"
       >
         <div 
           class="rounded flex h-screen px-4 space-y-2 w-full items-center justify-center text-5xl text-red-400"
@@ -52,15 +52,23 @@ export default {
     return {
       MongoData: null,
       options: {},
+      loading: true,
     };
   },
-  async created() {
-    try {
-      const response = await axios.get("/api/posts");
-      this.MongoData = response.data
-    } catch (err) {
-      this.error = err.message;
-    }},
+  created() {
+    this.getData()
+  },
+  methods: {
+    getData: async function() {
+      try {
+        const response = await axios.get("/api/posts");
+        this.MongoData = response.data
+        this.loading = false
+      } catch (err) {
+        this.error = err.message;
+      }
+    }
+  },
 };
 </script>
 
