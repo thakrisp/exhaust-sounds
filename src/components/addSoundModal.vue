@@ -1,29 +1,28 @@
 <template>
   <Transition name="modal-fade">
     <div
-      class="modal-backdrop"
+      class="modal-backdrop inset-0 bg-black/40 overflow-y-auto overflow-x-hidden fixed right-0 left-0 z-50 justify-center items-center md:h-full md:inset-0 flex"
       @click="close"
     >
       <div
-        class="modal w-1/2 rounded-md"
+        class="modal w-11/12 md:w-1/2 rounded-md bg-white shadow-2xl shadow-black/90 flex-col flex overflow-x-auto"
         @click.stop=""
       >
-        <header class="modal-header">
+        <header class="modal-header text-blue-500 items-center justify-between border-b-2 flex p-4">
           <slot
             name="header"
-            class=""
           >
             Add new exhaust sound!
           </slot>
           <button
             type="button"
-            class="btn-close"
+            class="btn-close font-bold text-lg"
             @click="close"
           >
             x
           </button>
         </header>
-        <section class="modal-body">
+        <section class="modal-body text-xs md:text-base px-4 py-1 border-b-2">
           <div
             v-show="errors.length >= 1"
             class="flex flex-col space-y-3"
@@ -34,7 +33,7 @@
               :error="e"
             />
           </div>
-          <form class="mt-6">
+          <form class="mt-4">
             <label
               for="vehicleNameInput"
               class="block text-xs font-semibold text-gray-600 uppercase"
@@ -58,7 +57,6 @@
               type="file"
               accept=".jpg, .png"
               name="imageFileInput"
-              placeholder="https://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3"
               class="block w-min py-3 mt-2 text-gray-700 appearance-none bg-transparent focus:outline-none focus:bg-gray-300 focus:shadow-inner"
               required
               @change="previewFiles($event, 'img')"
@@ -73,7 +71,6 @@
               type="file"
               accept=".mp3"
               name="audioFileInput"
-              placeholder="https://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3"
               class="block w-min py-3 mt-2 text-gray-700 appearance-none bg-transparent focus:outline-none focus:bg-gray-300 focus:shadow-inner"
               required
               @change="previewFiles($event, 'audio')"
@@ -95,7 +92,7 @@
           </form>
         </section>
 
-        <footer class="modal-footer">
+        <footer class="modal-footer flex-row-reverse flex p-4">
           <div class="inline-flex justify-end space-x-1">
             <button
               type="button"
@@ -235,11 +232,7 @@ export default {
 </script>
 
 <style>
-input {
-  @apply rounded-md;
-}
-
-.modal-fade-enter,
+/* .modal-fade-enter,
 .modal-fade-leave-to {
   opacity: 0;
 }
@@ -247,63 +240,10 @@ input {
 .modal-fade-enter-active,
 .modal-fade-leave-active {
   transition: opacity 0.5s ease;
-}
+} */
 
-.modal-backdrop {
-  z-index: 5;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal {
-  background: #ffffff;
-  box-shadow: 2px 2px 20px 1px;
-  overflow-x: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header,
-.modal-footer {
-  padding: 15px;
-  display: flex;
-}
-
-.modal-header {
-  @apply text-blue-500;
-  position: relative;
-  border-bottom: 1px solid #eeeeee;
-  justify-content: space-between;
-}
-
-.modal-footer {
-  border-top: 1px solid #eeeeee;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
-.modal-body {
-  position: relative;
-  padding: 20px 10px;
-}
-
-.btn-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  border: none;
-  font-size: 20px;
-  padding: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  background: transparent;
+input {
+  @apply rounded-md;
 }
 
 input[type='file']::file-selector-button {
