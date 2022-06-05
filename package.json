@@ -11,7 +11,7 @@
     "start": "node ./server/index.js"
   },
   "dependencies": {
-    "aws-sdk": "^2.1052.0",
+    "aws-sdk": "^2.1148.0",
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
