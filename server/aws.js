@@ -1,22 +1,24 @@
-const AWS = require('aws-sdk');
-const fs = require('fs');
-
-require('dotenv').config();
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { readFileSync } from "fs";
+import dotenv from "dotenv";
+dotenv.config();
 
 let ID = process.env.AccessKeyID;
 let SECRET = process.env.SecretAccessKey;
 
-//const BUCKET_NAME = 'test-sounds';
-
-const s3 = new AWS.S3({
-  accessKeyId: ID,
-  secretAccessKey: SECRET,
+const s3Client = new S3Client({
+  region: "us-east-2",
+  //forcePathStyle: true,
+  credentials: {
+    accessKeyId: ID,
+    secretAccessKey: SECRET,
+  },
 });
 
-function uploadFile(filePath, fileName, BUCKET_NAME, ext) {
+async function uploadFile(filePath, fileName, BUCKET_NAME, ext) {
   // Read content from the file
   let location = fileName.concat(ext);
-  const fileContent = fs.readFileSync(filePath);
+  const fileContent = readFileSync(filePath);
 
   // Setting up S3 upload parameters
   const params = {
@@ -26,15 +28,13 @@ function uploadFile(filePath, fileName, BUCKET_NAME, ext) {
   };
 
   // Uploading files to the bucket
-  s3.upload(params, (err, data) => {
-    if (err) {
-      throw err;
-    }
-
-    console.log(`File uploaded successfully. ${data.Location}`);
-  });
+  try {
+    const data = await s3Client.send(new PutObjectCommand(params));
+    console.log("Success", data);
+    //return data; // For unit tests.
+  } catch (err) {
+    console.log("Error", err);
+  }
 }
 
-module.exports = {
-  uploadFile,
-};
+export default uploadFile;
